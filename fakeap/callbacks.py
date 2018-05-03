@@ -143,7 +143,8 @@ class Callbacks(object):
             rsn_info = Dot11Elt(ID='RSNinfo', info=RSN)
             probe_response_packet = probe_response_packet / rsn_info
 
-        sendp(probe_response_packet, iface=self.ap.interface, verbose=False)
+        #sendp(probe_response_packet, iface=self.ap.interface, verbose=False)
+        self.ap.s2.send(probe_response_packet)
 
     def dot11_beacon(self, ssid):
         # Create beacon packet
@@ -166,7 +167,8 @@ class Callbacks(object):
         beacon_packet[Dot11Beacon].timestamp = self.ap.current_timestamp()
 
         # Send
-        sendp(beacon_packet, iface=self.ap.interface, verbose=False)
+        #sendp(beacon_packet, iface=self.ap.interface, verbose=False)
+        self.ap.s1.send(beacon_packet)
 
     def dot11_auth(self, receiver):
         auth_packet = self.ap.get_radiotap_header() \
@@ -174,14 +176,16 @@ class Callbacks(object):
                       / Dot11Auth(seqnum=0x02)
 
         printd("Sending Authentication (0x0B)...", Level.DEBUG)
-        sendp(auth_packet, iface=self.ap.interface, verbose=False)
+        #sendp(auth_packet, iface=self.ap.interface, verbose=False)
+        self.ap.s2.send(auth_packet)
 
     def dot11_ack(self, receiver):
         ack_packet = self.ap.get_radiotap_header() \
                      / Dot11(type='Control', subtype=0x1D, addr1=receiver)
 
         print("Sending ACK (0x1D) to %s ..." % receiver)
-        sendp(ack_packet, iface=self.ap.interface, verbose=False)
+        #sendp(ack_packet, iface=self.ap.interface, verbose=False)
+        self.ap.s2.send(ack_packet)
 
     def dot11_assoc_resp(self, receiver, reassoc):
         response_subtype = 0x01
@@ -193,14 +197,16 @@ class Callbacks(object):
                        / Dot11Elt(ID='Rates', info=AP_RATES)
 
         printd("Sending Association Response (0x01)...", Level.DEBUG)
-        sendp(assoc_packet, iface=self.ap.interface, verbose=False)
+        #sendp(assoc_packet, iface=self.ap.interface, verbose=False)
+        self.ap.s2.send(assoc_packet)
 
     def dot11_cts(self, receiver):
         cts_packet = self.ap.get_radiotap_header() \
                      / Dot11(ID=0x99, type='Control', subtype=12, addr1=receiver, addr2=self.ap.mac, SC=self.ap.next_sc())
 
         printd("Sending CTS (0x0C)...", Level.DEBUG)
-        sendp(cts_packet, iface=self.ap.interface, verbose=False)
+        #sendp(cts_packet, iface=self.ap.interface, verbose=False)
+        self.ap.s2.send(cts_packet)
 
     def arp_resp(self, receiver_mac, receiver_ip):
         arp_packet = self.ap.get_radiotap_header() \
@@ -210,7 +216,8 @@ class Callbacks(object):
                      / ARP(psrc=self.ap.ip.split('/')[0], pdst=receiver_ip, op="is-at", hwsrc=self.ap.mac, hwdst=receiver_mac)
 
         printd("Sending ARP Response...", Level.DEBUG)
-        sendp(arp_packet, iface=self.ap.interface, verbose=False)
+        #sendp(arp_packet, iface=self.ap.interface, verbose=False)
+        self.ap.s2.send(arp_packet)
 
     def dot1x_eap_resp(self, receiver, eap_code, eap_type, eap_data):
         eap_packet = self.ap.get_radiotap_header() \
@@ -225,12 +232,14 @@ class Callbacks(object):
 
         printd("Sending EAP Packet (code = %d, type = %d, data = %s)..." % (eap_code, eap_type, eap_data), Level.DEBUG)
         sendp(eap_packet, iface=self.ap.interface, verbose=False)
+        #self.ap.s2.send(eap_packet)
 
     def unspecified_raw(self, raw_data):
         raw_packet = str(raw_data)
 
         printd("Sending RAW packet...", Level.DEBUG)
-        sendp(raw_packet, iface=self.ap.interface, verbose=False)
+        #sendp(raw_packet, iface=self.ap.interface, verbose=False)
+        self.ap.s2.send(raw_packet)
 
     def dhcp_offer(self, client_mac, client_ip, xid):
         dhcp_offer_packet = self.ap.get_radiotap_header() \
@@ -245,6 +254,7 @@ class Callbacks(object):
                             / DHCP(options=[('server_id', self.ap.ip), 'end'])
 
         sendp(dhcp_offer_packet, iface=self.ap.interface, verbose=False)
+        #self.ap.s2.send(dhcp_offer_packet)
 
     def dhcp_ack(self, client_mac, client_ip, xid):
         dhcp_ack_packet = self.ap.get_radiotap_header() \
@@ -263,6 +273,7 @@ class Callbacks(object):
                           / DHCP(options=[('domain', "localdomain")]) \
                           / DHCP(options=['end'])
         sendp(dhcp_ack_packet, iface=self.ap.interface, verbose=False)
+        #self.ap.s3.send(dhcp_ack_packet)
 
     def dot11_encapsulate_ip(self, client_mac, ip_packet):
         if IP in ip_packet:
@@ -281,6 +292,7 @@ class Callbacks(object):
                           / str(ip_packet)
 
         sendp(response_packet, iface=self.ap.interface, verbose=False)
+        #self.ap.s3.send(response_packet)
 
     def dot11_to_tint(self, pkt):
         self.ap.tint.write(pkt)  # Pass to third party application for handling

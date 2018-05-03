@@ -1,6 +1,7 @@
 
 import subprocess
-from scapy.all import sniff
+#from scapy.all import sniff, conf
+from scapy.all import *
 from .eap import *
 from .arp import *
 from rpyutils import check_root, get_frequency, if_hwaddr, clear_ip_tables
@@ -18,7 +19,7 @@ class FakeAccessPoint(object):
             threading.Thread.__init__(self)
             self.ap = ap
             self.setDaemon(True)
-            self.interval = 0.1
+            self.interval = 1
 
         def run(self):
             while True:
@@ -55,6 +56,9 @@ class FakeAccessPoint(object):
         self.current_ssid_index = 0
 
         self.interface = interface
+        self.s3 = conf.L3socket(iface=interface)
+        self.s2 = conf.L2socket(iface=interface)
+        self.s1 = conf.L2socket(iface=interface)
         self.inet_interface = None
         self.channel = 1
         self.mac = if_hwaddr(interface)
