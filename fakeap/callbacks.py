@@ -1,5 +1,5 @@
 from .eap import *
-from rpyutils import *
+from .rpyutils import *
 from .constants import *
 
 from scapy.layers.dot11 import *

@@ -1,5 +1,5 @@
-from ConfigParser import ConfigParser, NoOptionError
-from rpyutils import printd, Level
+from configparser import ConfigParser, NoOptionError
+from .rpyutils import printd, Level
 
 
 class ConfigHeader(object):

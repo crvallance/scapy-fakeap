@@ -4,8 +4,8 @@ import os
 import threading
 from scapy.layers.inet import IP
 
-from constants import *
-from rpyutils import set_ip_address
+from .constants import *
+from .rpyutils import set_ip_address
 
 
 class TunInterface(threading.Thread):

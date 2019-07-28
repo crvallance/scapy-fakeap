@@ -4,7 +4,7 @@ import subprocess
 from scapy.all import *
 from .eap import *
 from .arp import *
-from rpyutils import check_root, get_frequency, if_hwaddr, clear_ip_tables
+from .rpyutils import check_root, get_frequency, if_hwaddr, clear_ip_tables
 from .callbacks import Callbacks
 from .tint import TunInterface
 from .conf import Conf

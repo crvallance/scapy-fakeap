@@ -25,7 +25,7 @@ class EAPType:
 
     @classmethod
     def convert_type(cls, type_value):
-        for key, value in vars(cls).iteritems():
+        for key, value in vars(cls).items():
             if value == type_value:
                 return str(key)
 
