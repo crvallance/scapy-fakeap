@@ -1,2 +1,2 @@
-from rpyutils import *
+from .rpyutils import *
 pass

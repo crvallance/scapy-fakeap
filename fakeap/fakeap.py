@@ -4,7 +4,7 @@ import subprocess
 from scapy.all import *
 from .eap import *
 from .arp import *
-from rpyutils import check_root, get_frequency, if_hwaddr, clear_ip_tables
+from .rpyutils import check_root, get_frequency, if_hwaddr, clear_ip_tables
 from .callbacks import Callbacks
 from .tint import TunInterface
 from .conf import Conf
@@ -139,7 +139,8 @@ class FakeAccessPoint(object):
         return temp
 
     def get_radiotap_header(self):
-        radiotap_packet = RadioTap(len=18, present='Flags+Rate+Channel+dBm_AntSignal+Antenna', notdecoded='\x00\x6c' + get_frequency(self.channel) + '\xc0\x00\xc0\x01\x00\x00')
+        freq = get_frequency(self.channel).decode("utf-8") 
+        radiotap_packet = RadioTap(len=18, present='Flags+Rate+Channel+dBm_AntSignal+Antenna', notdecoded='\x00\x6c' + freq + '\xc0\x00\xc0\x01\x00\x00')
         return radiotap_packet
 
     def run(self):

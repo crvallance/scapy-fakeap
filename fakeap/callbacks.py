@@ -1,11 +1,14 @@
 from .eap import *
-from rpyutils import *
+from .rpyutils import *
 from .constants import *
+
 
 from scapy.layers.dot11 import *
 from scapy.layers.dhcp import *
 from scapy.layers.dns import DNS
 from scapy.layers.inet import TCP, UDP
+from scapy.layers.eap import EAPOL, EAP
+from scapy.layers.l2 import ARP
 
 
 class Callbacks(object):
