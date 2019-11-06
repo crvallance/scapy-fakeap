@@ -7,6 +7,21 @@ from scapy.layers.inet import IP
 from constants import *
 from rpyutils import set_ip_address
 
+import logging
+
+log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+logger = logging.getLogger(__name__)
+
+# To override the default severity of logging
+logger.setLevel('DEBUG')
+
+# Use FileHandler() to log to a file
+file_handler = logging.FileHandler("python2-fakeap.log")
+formatter = logging.Formatter(log_format)
+file_handler.setFormatter(formatter)
+
+# Don't forget to add the file handler
+logger.addHandler(file_handler)
 
 class TunInterface(threading.Thread):
     def __init__(self, ap, name="fakeap"):
@@ -23,6 +38,9 @@ class TunInterface(threading.Thread):
         self.fd = open('/dev/net/tun', 'r+b')
         ifr_flags = IFF_TUN | IFF_NO_PI  # Tun device without packet information
         ifreq = struct.pack('16sH', name, ifr_flags)
+        logger.info("Name is type {0} and is {1}".format(type(name), name))
+        logger.info("ifr_flags is type {0} and is {1}".format(type(ifr_flags), ifr_flags))
+        logger.info("ifreq is type {0} and is {1}".format(type(ifreq), ifreq))
         fcntl.ioctl(self.fd, TUNSETIFF, ifreq)  # Syscall to create interface
 
         # Assign IP and bring interface up

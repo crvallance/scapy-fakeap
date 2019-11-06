@@ -11,6 +11,21 @@ from .conf import Conf
 from time import time, sleep
 from scapy.layers.dot11 import RadioTap, conf as scapyconf
 from scapy.layers.inet import TCP
+import logging
+
+log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+logger = logging.getLogger(__name__)
+
+# To override the default severity of logging
+logger.setLevel('DEBUG')
+
+# Use FileHandler() to log to a file
+file_handler = logging.FileHandler("python2-fakeap.log")
+formatter = logging.Formatter(log_format)
+file_handler.setFormatter(formatter)
+
+# Don't forget to add the file handler
+logger.addHandler(file_handler)
 
 
 class FakeAccessPoint(object):
@@ -140,6 +155,9 @@ class FakeAccessPoint(object):
 
     def get_radiotap_header(self):
         radiotap_packet = RadioTap(len=18, present='Flags+Rate+Channel+dBm_AntSignal+Antenna', notdecoded='\x00\x6c' + get_frequency(self.channel) + '\xc0\x00\xc0\x01\x00\x00')
+        logger.info("freq is type {0} and is {1}".format(type(get_frequency(self.channel)), get_frequency(self.channel)))
+        logger.info("self.channel is type {0} and is {1}".format(type(self.channel), self.channel))
+        logger.info("radiotap_packet is type {0} and is {1}".format(type(radiotap_packet), radiotap_packet))
         return radiotap_packet
 
     def run(self):
