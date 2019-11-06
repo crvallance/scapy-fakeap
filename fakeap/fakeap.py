@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel('DEBUG')
 
 # Use FileHandler() to log to a file
-file_handler = logging.FileHandler("mylogs.log")
+file_handler = logging.FileHandler("python3-fakeap.log")
 formatter = logging.Formatter(log_format)
 file_handler.setFormatter(formatter)
 
