@@ -3,9 +3,24 @@ import struct
 import os
 import threading
 from scapy.layers.inet import IP
+import logging
 
 from .constants import *
 from .rpyutils import set_ip_address
+
+log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+logger = logging.getLogger(__name__)
+
+# To override the default severity of logging
+logger.setLevel('DEBUG')
+
+# Use FileHandler() to log to a file
+file_handler = logging.FileHandler("mylogs.log")
+formatter = logging.Formatter(log_format)
+file_handler.setFormatter(formatter)
+
+# Don't forget to add the file handler
+logger.addHandler(file_handler)
 
 
 class TunInterface(threading.Thread):
@@ -20,9 +35,12 @@ class TunInterface(threading.Thread):
         self.ap = ap
 
         # Virtual interface
-        self.fd = open('/dev/net/tun', 'r')
+        self.fd = open('/dev/net/tun', 'rb+', buffering=0)
         ifr_flags = IFF_TUN | IFF_NO_PI  # Tun device without packet information
+        logger.info("Name is type {0} and is {1}".format(type(name), name))
+        logger.info("ifr_flags is type {0} and is {1}".format(type(ifr_flags), ifr_flags))
         ifreq = struct.pack('16sH', name.encode('utf-8'), ifr_flags)
+        logger.info("ifreq is type {0} and is {1}".format(type(ifreq), ifreq))
         fcntl.ioctl(self.fd, TUNSETIFF, ifreq)  # Syscall to create interface
 
         # Assign IP and bring interface up
