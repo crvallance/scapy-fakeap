@@ -40,6 +40,7 @@ class TunInterface(threading.Thread):
         logger.info("Name is type {0} and is {1}".format(type(name), name))
         logger.info("ifr_flags is type {0} and is {1}".format(type(ifr_flags), ifr_flags))
         ifreq = struct.pack('16sH', name.encode('utf-8'), ifr_flags)
+        ifreq = str(ifreq)
         logger.info("ifreq is type {0} and is {1}".format(type(ifreq), ifreq))
         fcntl.ioctl(self.fd, TUNSETIFF, ifreq)  # Syscall to create interface
 
